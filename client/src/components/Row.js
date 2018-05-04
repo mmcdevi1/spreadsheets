@@ -4,7 +4,7 @@ import Cell from './Cell';
 class Row extends React.Component {
   renderColumns () {
     const rows = [];
-    const { click, cells, row, blur, editable } = this.props;
+    const { click, cells, row, blur, toggleSelected, toggleEditable } = this.props;
 
     for (let i = 0; i < this.props.columns; i++) {
       rows.push (
@@ -13,7 +13,9 @@ class Row extends React.Component {
           click={click} 
           value="" 
           isEditable={cells[row][i].isEditable}
-          editable={editable}
+          isSelected={cells[row][i].isSelected}
+          toggleSelected={toggleSelected}
+          toggleEditable={toggleEditable}
           blur={blur}
           row={row}
           column={i}

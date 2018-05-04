@@ -1,3 +1,7 @@
+body {
+  font-size: 12px;
+}
+
 .App {
   text-align: center;
 }
@@ -33,7 +37,7 @@ td {
   position: relative;
   /*display: inline-block;*/
   box-sizing: border-box;
-  width: 100px;
+  min-width: 100px;
   height: 20px;
   margin: 0;
   padding: 0;
@@ -43,11 +47,20 @@ td {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  cursor: cell
+  cursor: cell;
 }
 
 td.selected {
-  border: 2px solid blue;
+  border: 2px solid #0bc3e2;
+}
+
+td.read-only,
+td.col-read-only {
+  background: #f0f0f0;
+}
+
+td.col-read-only {
+  min-width: 40px;
 }
 
 td span {
@@ -57,6 +70,7 @@ td span {
 td input {
   width: 100%;
   box-sizing: inherit;
+  padding-left: 2px;
 }
 
 table {
@@ -69,7 +83,9 @@ input {
   border: none;
 }
 
-
+.table-outer-wrapper {
+  overflow-x: scroll;
+}
 
 
 

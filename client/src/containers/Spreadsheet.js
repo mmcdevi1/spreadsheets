@@ -7,19 +7,20 @@ class Spreadsheet extends React.Component {
     super(props)
     this.state = {
       rows: 50,
-      columns: 10,
+      columns: 20,
+      selectedCell: null,
       cells: []
     }
   }
 
   componentDidMount () {
-  	const { rows, columns, cells } = this.state;
+    const { rows, columns, cells } = this.state;
 
   	const grid = new Array(rows);
 
 	  for (let i = 0; i < rows; i++) {
 	    grid[i] = Array.from({length: columns}).map(el => {
-	    	return { row: i, value: '', isEditable: false }
+	    	return { row: i, value: '', isEditable: false, isSelected: false }
 	    })
 	  }
 
@@ -28,15 +29,39 @@ class Spreadsheet extends React.Component {
 	  })
   }
 
-  toggleEditable = (rowIndex, colIndex) => {
-    const { cells } = this.state;
+  toggleSelected = (row, col) => {
+    const { cells, selectedCell } = this.state;
     const copy = cells.slice();
 
-    copy[rowIndex][colIndex].isEditable = !copy[rowIndex][colIndex].isEditable;
+    if (selectedCell) {
+      copy[selectedCell[0]][selectedCell[1]].isSelected = false
+    }
+
+    if (row > 0 && col > 0) {
+      copy[row][col].isSelected = true;
+    }    
+
+    this.setState({
+      selectedCell: [row, col],
+      cells: copy
+    })
+  }
+
+  toggleEditable = (row, col) => {
+    const { cells, selectedCell } = this.state;
+    const copy = cells.slice();
+
+    if (row > 0 && col > 0) {
+      copy[row][col].isEditable = !copy[row][col].isEditable;
+    }
 
     this.setState({
       cells: copy
     })
+  }
+
+  move = () => {
+    console.log('press')
   }
 
   renderRows () {
@@ -49,7 +74,8 @@ class Spreadsheet extends React.Component {
           columns={columns} 
           row={i}
           click={this.editable} 
-          editable={this.toggleEditable} 
+          toggleSelected={this.toggleSelected}
+          toggleEditable={this.toggleEditable}  
           blur={this.toggleEditable} 
           cells={this.state.cells}
         />
@@ -58,7 +84,6 @@ class Spreadsheet extends React.Component {
   }
   
   render() {
-    console.log(this.state.cells)
     return (
       <Table>
          { this.renderRows() }
