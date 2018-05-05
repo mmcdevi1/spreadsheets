@@ -1,67 +1,22 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Row from '../components/Row';
 import Table from '../components/Table';
-import KeyBoardEvent from '../components/KeyBoardEvents';
+import KeyboardEvents from '../hoc';
 import { LEFT_KEY, UP_KEY, RIGHT_KEY, DOWN_KEY, SPACE_KEY } from '../keys';
+import actions from '../actions/spreadsheet';
+
+const { generateCells, toggleSelected } = actions;
 
 class Spreadsheet extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      rows: 50,
-      columns: 20,
-      selectedCell: null,
-      cells: []
-    }
-  }
-
   componentDidMount () {
-    const { rows, columns, cells, selectedCell } = this.state;
+    const { rows, columns, generateCells, cells, selectedCell } = this.props;
 
-  	const grid = new Array(rows);
-
-	  for (let i = 0; i < rows; i++) {
-	    grid[i] = Array.from({length: columns}).map(el => {
-	    	return { row: i, value: '', isEditable: false, isSelected: false }
-	    })
-	  }
-
-	  this.setState({
-	  	cells: cells.concat(grid)
-	  })
-
-
-    document.addEventListener('keydown', function (e) {
-      if (this.state.selectedCell && ![37,38,39,40].includes(e.keyCode)) {
-        const copy = this.state.cells.slice();
-        copy[this.state.selectedCell[0]][this.state.selectedCell[1]].isEditable = true
-        this.setState({
-          cells: copy
-        })
-      }
-    }.bind(this))
-  }
-
-  toggleSelected = (row, col) => {
-    const { cells, selectedCell } = this.state;
-    const copy = cells.slice();
-
-    if (selectedCell) {
-      copy[selectedCell[0]][selectedCell[1]].isSelected = false
-    }
-
-    if (row > 0 && col > 0) {
-      copy[row][col].isSelected = true;
-    }    
-
-    this.setState({
-      selectedCell: [row, col],
-      cells: copy
-    })
+    generateCells(rows, columns)
   }
 
   toggleEditable = (row, col) => {
-    const { cells, selectedCell } = this.state;
+    const { cells, selectedCell } = this.props;
     const copy = cells.slice();
 
     if (row > 0 && col > 0) {
@@ -73,12 +28,8 @@ class Spreadsheet extends React.Component {
     })
   }
 
-  move = () => {
-    console.log('press')
-  }
-
   renderRows () {
-    const { rows, columns, cells } = this.state;
+    const { rows, columns, cells, toggleSelected } = this.props;
     
     return cells.map((row, i) => {
       return (
@@ -87,10 +38,9 @@ class Spreadsheet extends React.Component {
           columns={columns} 
           row={i}
           click={this.editable} 
-          toggleSelected={this.toggleSelected}
+          toggleSelected={toggleSelected}
           toggleEditable={this.toggleEditable}  
           blur={this.toggleEditable} 
-          cells={this.state.cells}
         />
       )
     })
@@ -102,10 +52,27 @@ class Spreadsheet extends React.Component {
         <Table>
            { this.renderRows() }
         </Table>
-        <KeyBoardEvent toggleSelected={this.toggleSelected} selectedCell={this.state.selectedCell} />
       </div>
     )
   }
 }
 
-export default Spreadsheet;
+function mapStateToProps (state) {
+  const { 
+    rows, 
+    columns, 
+    selectedCell, 
+    cells 
+  } = state.spreadsheet;
+
+  return {
+    rows, 
+    columns, 
+    selectedCell, 
+    cells,
+  }
+}
+
+export default connect(mapStateToProps, { generateCells, toggleSelected })(KeyboardEvents(Spreadsheet))
+
+// <KeyBoardEvent toggleSelected={this.toggleSelected} selectedCell={this.state.selectedCell} />

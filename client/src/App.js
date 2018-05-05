@@ -1,4 +1,6 @@
 import React from 'react';
+import { Provider } from 'react-redux';
+import store from './reducers/store';
 import Spreadsheet from './containers/Spreadsheet';
 import { LEFT_KEY, UP_KEY, RIGHT_KEY, DOWN_KEY, SPACE_KEY } from './keys';
 
@@ -15,7 +17,9 @@ class App extends React.Component {
 
   render () {
     return (
-      <Spreadsheet />
+      <Provider store={store}>
+        <Spreadsheet />
+      </Provider>
     )
   }
 }

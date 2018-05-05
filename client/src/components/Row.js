@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Cell from './Cell';
 
 class Row extends React.Component {
@@ -14,7 +15,6 @@ class Row extends React.Component {
           value="" 
           isEditable={cells[row][i].isEditable}
           isSelected={cells[row][i].isSelected}
-          toggleSelected={toggleSelected}
           toggleEditable={toggleEditable}
           blur={blur}
           row={row}
@@ -35,4 +35,20 @@ class Row extends React.Component {
   }
 }
 
-export default Row;
+function mapStateToProps (state) {
+  const { 
+    rows, 
+    columns, 
+    selectedCell, 
+    cells 
+  } = state.spreadsheet;
+
+  return {
+    rows, 
+    columns, 
+    selectedCell, 
+    cells,
+  }
+}
+
+export default connect(mapStateToProps)(Row);

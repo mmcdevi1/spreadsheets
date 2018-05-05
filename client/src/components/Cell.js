@@ -1,4 +1,8 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import actions from '../actions/spreadsheet';
+
+const { toggleSelected } = actions;
 
 class Cell extends React.Component {
   constructor (props) {
@@ -30,9 +34,11 @@ class Cell extends React.Component {
   }
 
   onEnterKeyPress = (e, row, col) => {
+    const { toggleSelected, cells, selectedCell } = this.props;
+
     if (e.charCode === 13) {
       this.props.toggleEditable(row, col)
-      this.props.toggleSelected(row + 1, col)
+      toggleSelected(row + 1, col, cells, selectedCell)
     }
   }
 
@@ -76,14 +82,14 @@ class Cell extends React.Component {
   }
 
   render () {
-    const { row, column, isEditable, toggleSelected, toggleEditable, isSelected } = this.props;
+    const { row, column, isEditable, toggleSelected, toggleEditable, isSelected, cells, selectedCell } = this.props;
 
     return (
       <td 
         className={this.defineClasses(row, column)}
         data-row={row} 
         data-column={column} 
-        onClick={() => toggleSelected(row, column)} 
+        onClick={() => toggleSelected(row, column, cells, selectedCell)} 
         onDoubleClick={() => toggleEditable(row, column)}
         onBlur={() => toggleEditable(row, column)}
         onKeyPress={(e) => this.onEnterKeyPress(e, row, column)}
@@ -94,28 +100,27 @@ class Cell extends React.Component {
   }
 }
 
-export default Cell;
+function mapStateToProps (state) {
+  const { 
+    rows, 
+    columns, 
+    selectedCell, 
+    cells 
+  } = state.spreadsheet;
+
+  return {
+    rows, 
+    columns, 
+    selectedCell, 
+    cells,
+  }
+}
+
+export default connect(mapStateToProps, { toggleSelected })(Cell);
 
 
 
-/*
-  NOTES:
 
-  td add class 'selected' when selected but keep span element.
-  Once editing, add class 'editing' and change span to input 
-  with double click or onChange
-
-  export const TAB_KEY = 9
-  export const ENTER_KEY = 13
-  export const ESCAPE_KEY = 27
-  export const LEFT_KEY = 37
-  export const UP_KEY = 38
-  export const RIGHT_KEY = 39
-  export const DOWN_KEY = 40
-  export const DELETE_KEY = 46
-  export const BACKSPACE_KEY = 8
-
-*/
 
 
 
