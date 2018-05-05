@@ -34,22 +34,7 @@ class Cell extends React.Component {
       this.props.toggleEditable(row, col)
       this.props.toggleSelected(row + 1, col)
     }
-
-    // if (e.charCode === 39) {
-    //   this.props.toggleSelected(row + 1, col)
-    // }
-    
   }
-
-  // test = () => {
-  //   const { row, column, isEditable, toggleSelected, toggleEditable, isSelected } = this.props;
-  //   document.addEventListener('keydown', function (e) {
-  //     if (e.keyCode === 39) {
-  //       console.log(e.keyCode)
-  //       toggleSelected(row, column + 1)
-  //     }
-  //   })
-  // }
 
   renderCell () {
     const { 

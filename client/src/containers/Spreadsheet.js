@@ -1,6 +1,8 @@
 import React from 'react';
 import Row from '../components/Row';
 import Table from '../components/Table';
+import KeyBoardEvent from '../components/KeyBoardEvents';
+import { LEFT_KEY, UP_KEY, RIGHT_KEY, DOWN_KEY, SPACE_KEY } from '../keys';
 
 class Spreadsheet extends React.Component {
   constructor(props) {
@@ -14,7 +16,7 @@ class Spreadsheet extends React.Component {
   }
 
   componentDidMount () {
-    const { rows, columns, cells } = this.state;
+    const { rows, columns, cells, selectedCell } = this.state;
 
   	const grid = new Array(rows);
 
@@ -27,6 +29,17 @@ class Spreadsheet extends React.Component {
 	  this.setState({
 	  	cells: cells.concat(grid)
 	  })
+
+
+    document.addEventListener('keydown', function (e) {
+      if (this.state.selectedCell && ![37,38,39,40].includes(e.keyCode)) {
+        const copy = this.state.cells.slice();
+        copy[this.state.selectedCell[0]][this.state.selectedCell[1]].isEditable = true
+        this.setState({
+          cells: copy
+        })
+      }
+    }.bind(this))
   }
 
   toggleSelected = (row, col) => {
@@ -85,9 +98,12 @@ class Spreadsheet extends React.Component {
   
   render() {
     return (
-      <Table>
-         { this.renderRows() }
-      </Table>
+      <div>
+        <Table>
+           { this.renderRows() }
+        </Table>
+        <KeyBoardEvent toggleSelected={this.toggleSelected} selectedCell={this.state.selectedCell} />
+      </div>
     )
   }
 }
