@@ -1,24 +1,19 @@
 import actions from '../actions/spreadsheet';
 
-const { GENERATE_CELLS, FORCE_EDIT } = actions;
+const { CELL_SELECTED } = actions;
 
 const initialState = {
-  rows: 100,
-  columns: 100,
-  cells: [],
+  selectedCell: [],
+  prevCell: []
 }
 
 const reducer = (state=initialState, action) => {
   switch (action.type) {
-    case GENERATE_CELLS:
+    case CELL_SELECTED:
       return {
         ...state,
-        cells: action.payload
-      }
-    case FORCE_EDIT:
-      return {
-        ...state,
-        cells: action.payload
+        prevCell: state.selectedCell,
+        selectedCell: action.payload,
       }
     default:
       return state;

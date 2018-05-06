@@ -10,7 +10,7 @@ const { generateCells, toggleSelected } = actions;
 
 class Spreadsheet extends React.Component {
   componentDidMount () {
-    const { rows, columns, generateCells, cells, selectedCell } = this.props;
+    const { rows, columns, generateCells } = this.props;
 
     generateCells(rows, columns)
   }
@@ -34,10 +34,10 @@ class Spreadsheet extends React.Component {
     return cells.map((row, i) => {
       return (
         <Row
+          onClick={() => console.log(i)}
           key={i}
           columns={columns} 
           row={i}
-          click={this.editable} 
           toggleSelected={toggleSelected}
           toggleEditable={this.toggleEditable}  
           blur={this.toggleEditable} 
@@ -46,13 +46,11 @@ class Spreadsheet extends React.Component {
     })
   }
   
-  render() {
+  render () {
     return (
-      <div>
-        <Table>
-           { this.renderRows() }
-        </Table>
-      </div>
+      <Table>
+         { this.renderRows() }
+      </Table>
     )
   }
 }

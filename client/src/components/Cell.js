@@ -10,27 +10,76 @@ class Cell extends React.Component {
 
     this.state = {
       value: '',
+      isSelected: false
     }
   }
 
   componentDidMount () {
-    if (this.props.column === 0 && this.props.row > 0) {
+    const { row, col, selectedCell, prevCell } = this.props;
+
+    if (col === 0 && row > 0) {
       this.setState({
-        value: this.props.row
+        value: row
       })
     }
 
-    if (this.props.row === 0 && this.props.column > 0) {
+    if (row === 0 && col > 0) {
       this.setState({
-        value: this.props.column
+        value: col
       })
     }
+
+    // if (row === prevCell[0] && col === prevCell[1]) {
+    //   window.addEventListener('click', function () {
+    //     console.log('yup')
+    //   })
+    // }
+
+    // window.addEventListener('click', this.clearGrid)
+    
+    window.addEventListener('click', function () {
+      if ( (this.props.row === this.props.prevCell[0]) && (this.props.col === this.props.prevCell[1]) ) {
+        this.setState({
+          isSelected: false
+        })
+      }
+    }.bind(this))
+  }  
+
+  componentWillUnmount () {
+   
+      window.removeEventListener('click', this.clearGrid)
+    
+  }
+
+  clearGrid = () => {
+    const { row, col, selectedCell } = this.props;
+
+    // if (selectedCell[0] !== row || selectedCell[1] !== col) {
+      // this.setState({
+      //   isSelected: false
+      // })
+    // }
+
+    console.log('hello world')
   }
 
   onChangeEvent (e) {
     this.setState({
       value: e.target.value
     })
+  }
+
+  onSelect = () => {
+    const { row, col, toggleSelected, selectedCell } = this.props;
+
+    if (row > 0 && col > 0) {
+      this.setState({
+        isSelected: true
+      })
+
+      toggleSelected(row, col)
+    }
   }
 
   onEnterKeyPress = (e, row, col) => {
@@ -56,7 +105,12 @@ class Cell extends React.Component {
     switch (isEditable) {
       case true:
         return (
-          <input onChange={(e) => this.onChangeEvent(e)} autoFocus type="text" value={value} tabIndex="0" />
+          <input 
+            onChange={(e) => this.onChangeEvent(e)} 
+            autoFocus 
+            type="text" 
+            value={value} 
+          />
         );
       default:
         return (
@@ -66,7 +120,7 @@ class Cell extends React.Component {
   }
 
   selectedClass () {
-    return 'cell' + ( this.props.isSelected ? ' selected' : '' )
+    return 'cell' + ( this.state.isSelected ? ' selected' : '' )
   }
 
   editableClass () {
@@ -82,17 +136,26 @@ class Cell extends React.Component {
   }
 
   render () {
-    const { row, column, isEditable, toggleSelected, toggleEditable, isSelected, cells, selectedCell } = this.props;
+    const { 
+      row, 
+      col, 
+      isEditable, 
+      toggleSelected, 
+      toggleEditable, 
+      isSelected, 
+      cells, 
+      selectedCell 
+    } = this.props;
 
     return (
       <td 
-        className={this.defineClasses(row, column)}
+        className={this.defineClasses(row, col)}
         data-row={row} 
-        data-column={column} 
-        onClick={() => toggleSelected(row, column, cells, selectedCell)} 
-        onDoubleClick={() => toggleEditable(row, column)}
-        onBlur={() => toggleEditable(row, column)}
-        onKeyPress={(e) => this.onEnterKeyPress(e, row, column)}
+        data-column={col} 
+        onClick={this.onSelect} 
+        onDoubleClick={() => toggleEditable(row, col)}
+        onBlur={() => toggleEditable(row, col)}
+        onKeyPress={(e) => this.onEnterKeyPress(e, row, col)}
       >
         {this.renderCell()}
       </td>
@@ -104,15 +167,17 @@ function mapStateToProps (state) {
   const { 
     rows, 
     columns, 
-    selectedCell, 
     cells 
   } = state.spreadsheet;
+
+  const { selectedCell, prevCell } = state.cell;
 
   return {
     rows, 
     columns, 
     selectedCell, 
     cells,
+    prevCell,
   }
 }
 

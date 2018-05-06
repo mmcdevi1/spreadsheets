@@ -22,22 +22,18 @@ const actions = {
 
   toggleSelected: (row, col, cells, selectedCell) => {
     return dispatch => {
-      const copy = cells.slice();
+      // const copy = cells.slice();
 
-      if (selectedCell) {
-        copy[selectedCell[0]][selectedCell[1]].isSelected = false
-      }
+      // if (selectedCell) {
+      //   copy[selectedCell[0]][selectedCell[1]].isSelected = false
+      // }
 
-      if (row > 0 && col > 0) {
-        copy[row][col].isSelected = true;
-      }    
-
+      // if (row > 0 && col > 0) {
+      //   copy[row][col].isSelected = true;
+      // }    
       dispatch({
         type: actions.CELL_SELECTED,
-        payload: {
-          selectedCell: [row, col],
-          cells: copy,
-        }
+        payload: [row, col]
       })
     }
   },

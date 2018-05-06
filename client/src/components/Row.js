@@ -13,12 +13,10 @@ class Row extends React.Component {
           key={i}
           click={click} 
           value="" 
-          isEditable={cells[row][i].isEditable}
-          isSelected={cells[row][i].isSelected}
           toggleEditable={toggleEditable}
           blur={blur}
           row={row}
-          column={i}
+          col={i}
         />
       )
     }
