@@ -9,7 +9,7 @@ const actions = {
 
       for (let i = 0; i < rows; i++) {
         grid[i] = Array.from({length: cols}).map(el => {
-          return { row: i, value: '', isEditable: false, isSelected: false }
+          return { value: '' }
         })
       }
 
@@ -20,17 +20,8 @@ const actions = {
     }
   },
 
-  toggleSelected: (row, col, cells, selectedCell) => {
-    return dispatch => {
-      // const copy = cells.slice();
-
-      // if (selectedCell) {
-      //   copy[selectedCell[0]][selectedCell[1]].isSelected = false
-      // }
-
-      // if (row > 0 && col > 0) {
-      //   copy[row][col].isSelected = true;
-      // }    
+  toggleSelected: (row, col) => {
+    return dispatch => {   
       dispatch({
         type: actions.CELL_SELECTED,
         payload: [row, col]
@@ -51,6 +42,14 @@ const actions = {
     }
     
   },
+
+  toggleEditable: () => {
+    return dispatch => {
+      dispatch({
+
+      })
+    }
+  }
 
 
 }

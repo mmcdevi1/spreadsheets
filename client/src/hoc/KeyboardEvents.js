@@ -19,23 +19,19 @@ export default function (ComposedComponent, toggleSelected) {
       const { toggleSelected, forceEdit, selectedCell, cells } = this.props;
 
       if (e.keyCode === 37) {
-        toggleSelected(selectedCell[0], selectedCell[1] - 1, cells, selectedCell)
+        toggleSelected(selectedCell[0], selectedCell[1] - 1)
       }
 
       if (e.keyCode === 38) {
-        toggleSelected(selectedCell[0] - 1, selectedCell[1], cells, selectedCell)
+        toggleSelected(selectedCell[0] - 1, selectedCell[1])
       }
 
       if (e.keyCode === 39) {
-        toggleSelected(selectedCell[0], selectedCell[1] + 1, cells, selectedCell)
+        toggleSelected(selectedCell[0], selectedCell[1] + 1)
       }
 
       if (e.keyCode === 40) {
-        toggleSelected(selectedCell[0] + 1, selectedCell[1], cells, selectedCell)
-      }
-
-      if (selectedCell && ![37,38,39,40].includes(e.keyCode)) {
-        forceEdit(cells, selectedCell)
+        toggleSelected(selectedCell[0] + 1, selectedCell[1])
       }
     }
 
@@ -47,15 +43,11 @@ export default function (ComposedComponent, toggleSelected) {
 
   function mapStateToProps (state) {
     const { 
-      columns, 
       selectedCell, 
-      cells 
-    } = state.spreadsheet;
+    } = state.cell;
 
     return {
-      columns, 
       selectedCell, 
-      cells,
     }
   }
 

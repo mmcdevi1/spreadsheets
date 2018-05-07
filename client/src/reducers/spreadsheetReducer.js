@@ -3,8 +3,8 @@ import actions from '../actions/spreadsheet';
 const { GENERATE_CELLS, FORCE_EDIT } = actions;
 
 const initialState = {
-  rows: 5,
-  columns: 5,
+  rows: 10,
+  columns: 25,
   cells: [],
 }
 

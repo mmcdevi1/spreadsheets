@@ -4,7 +4,7 @@ const { CELL_SELECTED } = actions;
 
 const initialState = {
   selectedCell: [],
-  prevCell: []
+  prevCell: [],
 }
 
 const reducer = (state=initialState, action) => {

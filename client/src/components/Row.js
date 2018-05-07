@@ -13,7 +13,6 @@ class Row extends React.Component {
           key={i}
           click={click} 
           value="" 
-          toggleEditable={toggleEditable}
           blur={blur}
           row={row}
           col={i}

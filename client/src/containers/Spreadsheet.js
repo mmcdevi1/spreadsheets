@@ -15,19 +15,6 @@ class Spreadsheet extends React.Component {
     generateCells(rows, columns)
   }
 
-  toggleEditable = (row, col) => {
-    const { cells, selectedCell } = this.props;
-    const copy = cells.slice();
-
-    if (row > 0 && col > 0) {
-      copy[row][col].isEditable = !copy[row][col].isEditable;
-    }
-
-    this.setState({
-      cells: copy
-    })
-  }
-
   renderRows () {
     const { rows, columns, cells, toggleSelected } = this.props;
     
@@ -39,7 +26,6 @@ class Spreadsheet extends React.Component {
           columns={columns} 
           row={i}
           toggleSelected={toggleSelected}
-          toggleEditable={this.toggleEditable}  
           blur={this.toggleEditable} 
         />
       )
@@ -72,5 +58,3 @@ function mapStateToProps (state) {
 }
 
 export default connect(mapStateToProps, { generateCells, toggleSelected })(KeyboardEvents(Spreadsheet))
-
-// <KeyBoardEvent toggleSelected={this.toggleSelected} selectedCell={this.state.selectedCell} />

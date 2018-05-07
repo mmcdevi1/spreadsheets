@@ -1,8 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import actions from '../actions/spreadsheet';
+import _ from 'lodash';
 
 const { toggleSelected } = actions;
+
+const notEqual = (arr, arr2) => {
+  return !_.isEqual(arr, arr2)
+}
 
 class Cell extends React.Component {
   constructor (props) {
@@ -10,12 +15,14 @@ class Cell extends React.Component {
 
     this.state = {
       value: '',
-      isSelected: false
+      isSelected: false,
+      isEditable: false,
     }
   }
 
   componentDidMount () {
     const { row, col, selectedCell, prevCell } = this.props;
+    const currentCell = [ row, col ];
 
     if (col === 0 && row > 0) {
       this.setState({
@@ -29,39 +36,78 @@ class Cell extends React.Component {
       })
     }
 
-    // if (row === prevCell[0] && col === prevCell[1]) {
-    //   window.addEventListener('click', function () {
-    //     console.log('yup')
-    //   })
-    // }
-
-    // window.addEventListener('click', this.clearGrid)
-    
-    window.addEventListener('click', function () {
-      if ( (this.props.row === this.props.prevCell[0]) && (this.props.col === this.props.prevCell[1]) ) {
-        this.setState({
-          isSelected: false
-        })
-      }
-    }.bind(this))
+    // window.addEventListener('click', (e) => this.clearGrid(e))
+    // window.addEventListener('keydown', (e) => this.clearGridOnKey(e))
+    // window.addEventListener('keydown', (e) => this.forceEdit(e))
   }  
 
   componentWillUnmount () {
-   
-      window.removeEventListener('click', this.clearGrid)
-    
+    // window.removeEventListener('click', (e) => this.clearGrid(e))
+    // window.removeEventListener('keydown', (e) => this.clearGridOnKey(e))
+    // window.removeEventListener('keydown', (e) => this.forceEdit(e))
   }
 
-  clearGrid = () => {
-    const { row, col, selectedCell } = this.props;
+  // componentWillUpdate () {
+  //   const { row, col, selectedCell, prevCell } = this.props;
+  //   const currentCell = [ row, col ];
 
-    // if (selectedCell[0] !== row || selectedCell[1] !== col) {
-      // this.setState({
-      //   isSelected: false
-      // })
+  //   if ( _.isEqual( currentCell, prevCell ) ) {
+  //     this.toggleIsSelected(false)
+  //   } else if ( _.isEqual( currentCell, selectedCell ) ) {
+  //     this.toggleIsSelected(true)
+  //   }
+  // }
+
+  // forceEdit = (e) => {
+  //   const { row, col, toggleSelected, selectedCell } = this.props;
+
+  //   if (selectedCell && ![37,38,39,40].includes(e.keyCode)) {
+  //     this.setState({
+  //       isEditable: true
+  //     })
+  //   }
+  // }
+
+  clearGrid = (e) => {
+    const { row, col, prevCell, selectedCell } = this.props;
+    const currentCell = [ row, col ];
+
+    // Lodash.isEqual comparing two arrays for equality
+    if ( notEqual( prevCell, selectedCell ) && _.isEqual( currentCell, prevCell ) ) {
+      this.setState({
+        isSelected: false
+      })
+    }
+  }
+
+  clearGridOnKey = (e) => {
+    const { row, col, prevCell, selectedCell, toggleSelected } = this.props;
+    const currentCell = [ row, col ];
+
+    if (row > 0 && col > 0 && [37, 38, 39, 40].includes(e.keyCode)) {
+
+      if ( _.isEqual( currentCell, prevCell ) ) {
+        this.toggleIsSelected(false)
+      } else if ( _.isEqual( currentCell, selectedCell ) ) {
+        this.toggleIsSelected(true)
+      } 
+    }
+
+    // if (this.state.isEditable) {
+    //   if (e.keyCode === 13) {
+
+    //     if ( _.isEqual( currentCell, prevCell ) ) {
+    //       console.log(currentCell, prevCell)
+    //       this.toggleIsSelected(false)
+    //       this.toggleEditable(row, col)
+    //       toggleSelected(selectedCell[0] + 1, selectedCell[1])
+    //     } else if ( _.isEqual( currentCell, selectedCell ) ) {
+    //       console.log(currentCell, selectedCell)
+    //       this.toggleIsSelected(true)
+    //     } 
+    //   }
     // }
-
-    console.log('hello world')
+    
   }
 
   onChangeEvent (e) {
@@ -83,24 +129,28 @@ class Cell extends React.Component {
   }
 
   onEnterKeyPress = (e, row, col) => {
-    const { toggleSelected, cells, selectedCell } = this.props;
+    const { toggleSelected, cells, selectedCell, prevCell } = this.props;
 
     if (e.charCode === 13) {
-      this.props.toggleEditable(row, col)
-      toggleSelected(row + 1, col, cells, selectedCell)
+      this.toggleEditable(row, col)
+      toggleSelected(row + 1, col)
     }
   }
 
-  renderCell () {
-    const { 
-      row, 
-      column, 
-      isEditable, 
-      isSelected, 
-      toggleSelected 
-    } = this.props;
+  toggleEditable = () => {
+    this.setState({
+      isEditable: !this.state.isEditable
+    })
+  }
 
-    const { value } = this.state;
+  toggleIsSelected = (value) => {
+    this.setState({
+      isSelected: value
+    })
+  }
+
+  renderCell () {
+    const { value, isEditable } = this.state;
 
     switch (isEditable) {
       case true:
@@ -124,7 +174,7 @@ class Cell extends React.Component {
   }
 
   editableClass () {
-    return this.selectedClass() + ( this.props.isEditable ? ' editable' : '' )
+    return this.selectedClass() + ( this.state.isEditable ? ' editable' : '' )
   }
 
   readOnlyClass (row) {
@@ -140,8 +190,7 @@ class Cell extends React.Component {
       row, 
       col, 
       isEditable, 
-      toggleSelected, 
-      toggleEditable, 
+      toggleSelected,  
       isSelected, 
       cells, 
       selectedCell 
@@ -153,8 +202,8 @@ class Cell extends React.Component {
         data-row={row} 
         data-column={col} 
         onClick={this.onSelect} 
-        onDoubleClick={() => toggleEditable(row, col)}
-        onBlur={() => toggleEditable(row, col)}
+        onDoubleClick={() => this.toggleEditable()}
+        onBlur={() => this.toggleEditable()}
         onKeyPress={(e) => this.onEnterKeyPress(e, row, col)}
       >
         {this.renderCell()}
