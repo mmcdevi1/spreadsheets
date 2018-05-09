@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import actions from '../actions/spreadsheet';
+import { LEFT_KEY, UP_KEY, RIGHT_KEY, DOWN_KEY } from '../keys';
 
 const { toggleSelected, forceEdit } = actions;
 
@@ -16,22 +17,22 @@ export default function (ComposedComponent, toggleSelected) {
     }
 
     keyboardEvent (e) {
-      const { toggleSelected, forceEdit, selectedCell, cells } = this.props;
+      const { toggleSelected, forceEdit, currentCell, cells } = this.props;
 
-      if (e.keyCode === 37) {
-        toggleSelected(selectedCell[0], selectedCell[1] - 1)
+      if (e.keyCode === LEFT_KEY) {
+        toggleSelected(currentCell[0], currentCell[1] - 1)
       }
 
-      if (e.keyCode === 38) {
-        toggleSelected(selectedCell[0] - 1, selectedCell[1])
+      if (e.keyCode === UP_KEY) {
+        toggleSelected(currentCell[0] - 1, currentCell[1])
       }
 
-      if (e.keyCode === 39) {
-        toggleSelected(selectedCell[0], selectedCell[1] + 1)
+      if (e.keyCode === RIGHT_KEY) {
+        toggleSelected(currentCell[0], currentCell[1] + 1)
       }
 
-      if (e.keyCode === 40) {
-        toggleSelected(selectedCell[0] + 1, selectedCell[1])
+      if (e.keyCode === DOWN_KEY) {
+        toggleSelected(currentCell[0] + 1, currentCell[1])
       }
     }
 
@@ -43,11 +44,11 @@ export default function (ComposedComponent, toggleSelected) {
 
   function mapStateToProps (state) {
     const { 
-      selectedCell, 
+      currentCell, 
     } = state.cell;
 
     return {
-      selectedCell, 
+      currentCell, 
     }
   }
 

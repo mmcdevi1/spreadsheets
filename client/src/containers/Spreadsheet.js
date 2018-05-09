@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import Row from '../components/Row';
 import Table from '../components/Table';
 import KeyboardEvents from '../hoc';
-import { LEFT_KEY, UP_KEY, RIGHT_KEY, DOWN_KEY, SPACE_KEY } from '../keys';
+// import { LEFT_KEY, UP_KEY, RIGHT_KEY, DOWN_KEY, SPACE_KEY } from '../keys';
 import actions from '../actions/spreadsheet';
 
 const { generateCells, toggleSelected } = actions;
@@ -25,7 +25,6 @@ class Spreadsheet extends React.Component {
           key={i}
           columns={columns} 
           row={i}
-          toggleSelected={toggleSelected}
           blur={this.toggleEditable} 
         />
       )
@@ -44,17 +43,15 @@ class Spreadsheet extends React.Component {
 function mapStateToProps (state) {
   const { 
     rows, 
-    columns, 
-    selectedCell, 
-    cells 
+    columns,
+    cells
   } = state.spreadsheet;
 
   return {
     rows, 
-    columns, 
-    selectedCell, 
+    columns,
     cells,
   }
 }
 
-export default connect(mapStateToProps, { generateCells, toggleSelected })(KeyboardEvents(Spreadsheet))
+export default connect(mapStateToProps, { generateCells })(Spreadsheet)

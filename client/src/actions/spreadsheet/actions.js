@@ -29,11 +29,11 @@ const actions = {
     }
   },
 
-  forceEdit: (cells, selectedCell) => {
+  forceEdit: (cells, currentCell) => {
     return dispatch => {
       
       const copy = cells.slice();
-      copy[selectedCell[0]][selectedCell[1]].isEditable = true
+      copy[currentCell[0]][currentCell[1]].isEditable = true
 
       dispatch({
         type: actions.FORCE_EDIT,

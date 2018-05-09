@@ -3,7 +3,7 @@ import actions from '../actions/spreadsheet';
 const { CELL_SELECTED } = actions;
 
 const initialState = {
-  selectedCell: [],
+  currentCell: [],
   prevCell: [],
 }
 
@@ -11,9 +11,9 @@ const reducer = (state=initialState, action) => {
   switch (action.type) {
     case CELL_SELECTED:
       return {
-        ...state,
-        prevCell: state.selectedCell,
-        selectedCell: action.payload,
+        ...state,        
+        currentCell: action.payload,
+        prevCell: state.currentCell,
       }
     default:
       return state;

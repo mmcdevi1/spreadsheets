@@ -2,10 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Cell from './Cell';
 
-class Row extends React.Component {
+class Row extends React.PureComponent {
   renderColumns () {
     const rows = [];
-    const { click, cells, row, blur, toggleSelected, toggleEditable } = this.props;
+    const { click, row, blur } = this.props;
 
     for (let i = 0; i < this.props.columns; i++) {
       rows.push (
@@ -35,16 +35,12 @@ class Row extends React.Component {
 function mapStateToProps (state) {
   const { 
     rows, 
-    columns, 
-    selectedCell, 
-    cells 
+    columns
   } = state.spreadsheet;
 
   return {
     rows, 
-    columns, 
-    selectedCell, 
-    cells,
+    columns
   }
 }
 

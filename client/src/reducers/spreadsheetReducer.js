@@ -3,7 +3,7 @@ import actions from '../actions/spreadsheet';
 const { GENERATE_CELLS, FORCE_EDIT } = actions;
 
 const initialState = {
-  rows: 10,
+  rows: 25,
   columns: 25,
   cells: [],
 }
