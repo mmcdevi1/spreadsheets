@@ -1,15 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Cell from './Cell';
+import CellData from './CellData';
 
 class Row extends React.PureComponent {
+  // shouldComponentUpdate (nextProps, nextState) {
+  //   if (nextProps.columns)
+  // }
+
   renderColumns () {
     const rows = [];
     const { click, row, blur } = this.props;
 
     for (let i = 0; i < this.props.columns; i++) {
       rows.push (
-        <Cell 
+        <CellData 
           key={i}
           click={click} 
           value="" 
@@ -24,6 +28,7 @@ class Row extends React.PureComponent {
   }
 
   render () {
+    // console.log('ROW RENDERS')
     return (
       <tr>
         { this.renderColumns() }
@@ -33,14 +38,12 @@ class Row extends React.PureComponent {
 }
 
 function mapStateToProps (state) {
-  const { 
-    rows, 
-    columns
-  } = state.spreadsheet;
+  const { columns } = state.spreadsheet
+  const { currentCell } = state.cell
 
   return {
-    rows, 
-    columns
+    columns,
+    currentCell,
   }
 }
 

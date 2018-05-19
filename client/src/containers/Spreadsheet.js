@@ -54,4 +54,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, { generateCells })(Spreadsheet)
+export default connect(mapStateToProps, { generateCells, toggleSelected })(KeyboardEvents(Spreadsheet))

@@ -17,7 +17,7 @@ export default function (ComposedComponent, toggleSelected) {
     }
 
     keyboardEvent (e) {
-      const { toggleSelected, forceEdit, currentCell, cells } = this.props;
+      const { toggleSelected, forceEdit, currentCell } = this.props;
 
       if (e.keyCode === LEFT_KEY) {
         toggleSelected(currentCell[0], currentCell[1] - 1)

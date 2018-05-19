@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect'
 import actions from '../actions/spreadsheet';
 import _ from 'lodash';
+import math from 'mathjs';
+
+import Cell from './Cell_test';
 
 const { toggleSelected } = actions;
 
@@ -10,12 +13,13 @@ const notEqual = (arr, arr2) => {
   return !_.isEqual(arr, arr2)
 }
 
-class Cell extends React.Component {
+class CellData extends React.Component {
   constructor (props) {
     super (props)
 
     this.state = {
       value: '',
+      mathValue: null,
       selected: false,
       editable: false,
     }
@@ -58,10 +62,15 @@ class Cell extends React.Component {
     if (nextState.editable !== editable) { return true }
 
     if ( _.isEqual( thisCell, this.props.currentCell ) || _.isEqual( thisCell, nextProps.currentCell ) ) {
-      console.log('This is the cell, ', thisCell)
+      console.log('This is the cell, ', thisCell, this.props.currentCell, nextProps.currentCell)
       return true 
     }
 
+    // if ( _.isEqual( thisCell, this.props.prevCell ) ) {
+    //   console.log('This is the cell, ', thisCell)
+    //   return true 
+    // }
+    console.log('TEST IN shouldComponentUpdate')
     return false
   }
 
@@ -137,8 +146,6 @@ class Cell extends React.Component {
 
       toggleSelected(row, col)
     }
-
-    console.log(this.state)
   }
 
   onEnterKeyPress = (e, row, col) => {
@@ -154,6 +161,9 @@ class Cell extends React.Component {
     this.setState({
       editable: !this.state.editable
     })
+
+    this.test()
+    this.calculate()
   }
 
   toggleIsSelected = (value) => {
@@ -162,8 +172,55 @@ class Cell extends React.Component {
     })
   }
 
-  renderCell () {
+  test = () => {
     const { value, editable } = this.state;
+
+    if (value.length === 3 && value[0] === '=') {
+      const el = document.getElementById(value.substr(1))
+                  .children[0].innerHTML
+
+      this.setState({ 
+        mathValue: el
+      })
+    }
+  }
+
+  sum (nums) {
+    return nums.split(',')
+      .map(int => parseInt(int))
+      .reduce((a, b) => a + b)
+  }
+
+  calculate = () => {
+    const { value, editable } = this.state;
+    let result;
+
+    if (value.split( '(' )[0] === '=sum') {
+      const args = value.slice(5, value.length - 1)
+      result = this.sum( args )
+    } else if (value.length > 0 && value[0] === '=') {
+      result = math.eval(value.substr(1)) 
+    } 
+
+    // switch ( value.split( '(' )[0] ) {
+    //   case '=sum':
+    //     const args = value.slice(5, value.length - 1)
+    //     result = this.sum( args )
+    //     break;
+    //   case '=':
+    //     result = math.eval(value.substr(1))
+    //     break;
+    //   default:
+    //     return;
+    // }
+    
+    this.setState({ 
+      mathValue: result
+    })
+  }
+
+  renderCell () {
+    const { value, editable, mathValue } = this.state;
 
     switch (editable) {
       case true:
@@ -177,33 +234,33 @@ class Cell extends React.Component {
         );
       default:
         return (
-          <span>{value}</span>
+          <span>{mathValue ? mathValue : value}</span>
         )
     }
   }
 
-  selectedClass () {
+  selectedClass = () =>  {
     return 'cell' + ( this.state.selected ? ' selected' : '' )
   }
 
-  editableClass () {
+  editableClass = () =>  {
     return this.selectedClass() + ( this.state.editable ? ' editable' : '' )
   }
 
-  readOnlyClass (row) {
+  readOnlyClass = (row) =>  {
     return this.editableClass() + ( row === 0  ? ' read-only' : '' ); 
   }
 
-  defineClasses (row, col) {
+  defineClasses = (row, col) =>  {
     return this.readOnlyClass(row) + ( col === 0  ? ' col-read-only' : '' ); 
   }
 
   render () {
     const { row, col, } = this.props;
-
+    console.log('TEST IN RENDER')
     return (
       <td 
-        id={`${row}-${col}`}
+        id={`${col}${row}`}
         className={this.defineClasses(row, col)}
         data-row={row} 
         data-column={col} 
@@ -215,6 +272,19 @@ class Cell extends React.Component {
         {this.renderCell()}
       </td>
     )
+
+    // return (
+    //   <Cell 
+    //     row={row}
+    //     col={col}
+    //     onSelect={this.onSelect}
+    //     defineClasses={this.defineClasses}
+    //     currentCell={this.props.currentCell}
+    //     toggleEditable={this.toggleEditable}
+    //   >
+    //     { this.renderCell() }
+    //   </Cell>
+    // )
   }
 }
 
@@ -227,29 +297,22 @@ class Cell extends React.Component {
 // )
 
 // selector
-// const getSelectedCell = (state) => state.cell.currentCell
-// const getPrevCell = (state) => state.cell.prevCell
-// // reselect function
-// const getSelectedCellState = createSelector(
-//   [ getSelectedCell ],
-//   (currentCell) => currentCell
-// )
-
-// const getPrevCellState = createSelector(
-//   [ getPrevCell ],
-//   (prevCell) => prevCell
-// )
+const getSelectedCell = (state) => state.cell.currentCell
+// reselect function
+const getSelectedCellState = createSelector(
+  [ getSelectedCell ],
+  (currentCell) => currentCell
+)
 
 function mapStateToProps (state) {
-  const { currentCell, prevCell } = state.cell;
+  const { currentCell } = state.cell;
 
   return {
-    currentCell,
-    prevCell,
+    currentCell: getSelectedCellState(state)
   }
 }
 
-export default connect(mapStateToProps, { toggleSelected })(Cell);
+export default connect(mapStateToProps, { toggleSelected })(CellData);
 
 
 
