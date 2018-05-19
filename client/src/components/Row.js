@@ -2,14 +2,32 @@ import React from 'react';
 import { connect } from 'react-redux';
 import CellData from './CellData';
 
-class Row extends React.PureComponent {
-  // shouldComponentUpdate (nextProps, nextState) {
-  //   if (nextProps.columns)
-  // }
+class Row extends React.Component {
+  constructor (props) {
+    super(props);
+
+    this.state = {
+      row: null
+    }
+  }
+
+  componentDidMount () {
+    this.setState({
+      row: this.props.row
+    })
+  }
+
+  shouldComponentUpdate (nextProps, nextState) {
+    // console.log(nextProps.currentCell[0] === this.state.ro)
+    if (nextProps.currentCell[0]  === this.state.row) { return true }
+    if (this.props.currentCell[0] === this.state.row) { return true }
+
+    return false
+  }
 
   renderColumns () {
     const rows = [];
-    const { click, row, blur } = this.props;
+    const { click, row, blur, currentCell } = this.props;
 
     for (let i = 0; i < this.props.columns; i++) {
       rows.push (
@@ -20,6 +38,7 @@ class Row extends React.PureComponent {
           blur={blur}
           row={row}
           col={i}
+          currentCell={currentCell}
         />
       )
     }
@@ -28,7 +47,7 @@ class Row extends React.PureComponent {
   }
 
   render () {
-    // console.log('ROW RENDERS')
+    console.log('[ROW COMPONENT]: Is Rendering')
     return (
       <tr>
         { this.renderColumns() }
@@ -39,12 +58,10 @@ class Row extends React.PureComponent {
 
 function mapStateToProps (state) {
   const { columns } = state.spreadsheet
-  const { currentCell } = state.cell
 
   return {
     columns,
-    currentCell,
   }
 }
 
-export default connect(mapStateToProps)(Row);
+export default Row

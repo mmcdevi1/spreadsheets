@@ -16,7 +16,7 @@ class Spreadsheet extends React.Component {
   }
 
   renderRows () {
-    const { rows, columns, cells, toggleSelected } = this.props;
+    const { rows, columns, cells, toggleSelected, currentCell } = this.props;
     
     return cells.map((row, i) => {
       return (
@@ -26,12 +26,14 @@ class Spreadsheet extends React.Component {
           columns={columns} 
           row={i}
           blur={this.toggleEditable} 
+          currentCell={currentCell}
         />
       )
     })
   }
   
   render () {
+    console.log('[SPREADSHEET COMPONENT]: Is Rendering')
     return (
       <Table>
          { this.renderRows() }
@@ -47,11 +49,60 @@ function mapStateToProps (state) {
     cells
   } = state.spreadsheet;
 
+  const { currentCell } = state.cell;
+
   return {
     rows, 
     columns,
     cells,
+    currentCell,
   }
 }
 
-export default connect(mapStateToProps, { generateCells, toggleSelected })(KeyboardEvents(Spreadsheet))
+export default connect(
+  mapStateToProps, 
+  { generateCells, toggleSelected }
+)(KeyboardEvents(Spreadsheet))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

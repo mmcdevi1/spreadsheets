@@ -62,15 +62,9 @@ class CellData extends React.Component {
     if (nextState.editable !== editable) { return true }
 
     if ( _.isEqual( thisCell, this.props.currentCell ) || _.isEqual( thisCell, nextProps.currentCell ) ) {
-      console.log('This is the cell, ', thisCell, this.props.currentCell, nextProps.currentCell)
       return true 
     }
-
-    // if ( _.isEqual( thisCell, this.props.prevCell ) ) {
-    //   console.log('This is the cell, ', thisCell)
-    //   return true 
-    // }
-    console.log('TEST IN shouldComponentUpdate')
+    
     return false
   }
 
@@ -257,7 +251,7 @@ class CellData extends React.Component {
 
   render () {
     const { row, col, } = this.props;
-    console.log('TEST IN RENDER')
+    console.log('[CELL COMPONENT]: Is Rendering')
     return (
       <td 
         id={`${col}${row}`}
@@ -304,15 +298,15 @@ const getSelectedCellState = createSelector(
   (currentCell) => currentCell
 )
 
-function mapStateToProps (state) {
-  const { currentCell } = state.cell;
+// function mapStateToProps (state) {
+//   const { currentCell } = state.cell;
 
-  return {
-    currentCell: getSelectedCellState(state)
-  }
-}
+//   return {
+//     currentCell: getSelectedCellState(state)
+//   }
+// }
 
-export default connect(mapStateToProps, { toggleSelected })(CellData);
+export default connect(null, { toggleSelected })(CellData);
 
 
 
