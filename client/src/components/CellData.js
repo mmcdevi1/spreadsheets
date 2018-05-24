@@ -1,130 +1,32 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { createSelector } from 'reselect'
+// import { createSelector } from 'reselect'
 import actions from '../actions/spreadsheet';
 import _ from 'lodash';
 import math from 'mathjs';
 
-import Cell from './Cell_test';
+// import Cell from './Cell_test';
 
 const { toggleSelected } = actions;
-
-const notEqual = (arr, arr2) => {
-  return !_.isEqual(arr, arr2)
-}
 
 class CellData extends React.Component {
   constructor (props) {
     super (props)
 
+    const { row, col } = props;
+    const isLeftCell = col === 0 && row > 0
+    const isTopCell = row === 0 && col > 0
+    const value = (isLeftCell && row) || (isTopCell && col) || ''
+
     this.state = {
-      value: '',
+      value,
       mathValue: null,
-      selected: false,
       editable: false,
     }
-  }
-
-  componentDidMount () {
-    const { row, col } = this.props;
-
-    this.headerValues()
-
-    window.addEventListener('keydown', (e) => this.clearGridOnKey(e))
-    // window.addEventListener('keydown', (e) => this.forceEdit(e))
-  }
-
-  componentWillUnmount () {
-    window.removeEventListener('keydown', (e) => this.clearGridOnKey(e))
-    // window.removeEventListener('keydown', (e) => this.forceEdit(e))
-  }
-
-  UNSAFE_componentWillReceiveProps (nextProps) {
-    const { selected, editable } = this.state;
-
-    if ( selected && notEqual(nextProps.currentCell, this.props.currentCell) ) {
-      this.setState({ selected: false })
-    }
-
-    // if ( editable && !_.isEqual(nextProps.currentCell, this.props.currentCell) ) {
-    //   this.setState({ editable: false })
-    // }
-  }
-
-  shouldComponentUpdate (nextProps, nextState) {
-    const { value, selected, editable } = this.state;
-    const { row, col, prevCell } = this.props;
-
-    const thisCell = [ row, col ]
-
-    if (nextState.value    !== value)    { return true }
-    if (nextState.selected !== selected) { return true }
-    if (nextState.editable !== editable) { return true }
-
-    if ( _.isEqual( thisCell, this.props.currentCell ) || _.isEqual( thisCell, nextProps.currentCell ) ) {
-      return true
-    }
-
-    return false
-  }
-
-  headerValues () {
-    const { row, col } = this.props;
-
-    if (col === 0 && row > 0) {
-      this.setState({
-        value: row
-      })
-    }
-
-    if (row === 0 && col > 0) {
-      this.setState({
-        value: col
-      })
-    }
-  }
-
-  forceEdit = (e) => {
-    const { currentCell } = this.props;
-
-    if (currentCell && ![37,38,39,40].includes(e.keyCode)) {
-      this.setState({
-        editable: true
-      })
-    }
-  }
-
-  clearGridOnKey = (e) => {
-    const { row, col, prevCell, currentCell, toggleSelected } = this.props;
-    const cell = [ row, col ];
-
-    if (row > 0 && col > 0 && [37, 38, 39, 40].includes(e.keyCode)) {
-
-      if ( _.isEqual( cell, prevCell ) ) {
-        this.toggleIsSelected(false)
-      } else if ( _.isEqual( cell, currentCell ) ) {
-        this.toggleIsSelected(true)
-      }
-    }
-
-    // if (this.state.editable) {
-    //   if (e.keyCode === 13) {
-
-    //     if ( _.isEqual( currentCell, prevCell ) ) {
-    //       console.log(currentCell, prevCell)
-    //       this.toggleIsSelected(false)
-    //       this.toggleEditable(row, col)
-    //       toggleSelected(currentCell[0] + 1, currentCell[1])
-    //     } else if ( _.isEqual( currentCell, currentCell ) ) {
-    //       console.log(currentCell, currentCell)
-    //       this.toggleIsSelected(true)
-    //     }
-    //   }
-    // }
 
   }
 
-  onChangeEvent (e) {
+  onChangeEvent = (e) => {
     this.setState({
       value: e.target.value
     })
@@ -134,9 +36,9 @@ class CellData extends React.Component {
     const { row, col, toggleSelected } = this.props;
 
     if (row > 0 && col > 0) {
-      this.setState({
-        selected: true,
-      })
+      // this.setState({
+      //   selected: true,
+      // })
 
       toggleSelected(row, col)
     }
@@ -158,12 +60,6 @@ class CellData extends React.Component {
 
     this.test()
     this.calculate()
-  }
-
-  toggleIsSelected = (value) => {
-    this.setState({
-      selected: value
-    })
   }
 
   test = () => {
@@ -196,18 +92,6 @@ class CellData extends React.Component {
       result = math.eval(value.substr(1))
     }
 
-    // switch ( value.split( '(' )[0] ) {
-    //   case '=sum':
-    //     const args = value.slice(5, value.length - 1)
-    //     result = this.sum( args )
-    //     break;
-    //   case '=':
-    //     result = math.eval(value.substr(1))
-    //     break;
-    //   default:
-    //     return;
-    // }
-
     this.setState({
       mathValue: result
     })
@@ -220,7 +104,7 @@ class CellData extends React.Component {
       case true:
         return (
           <input
-            onChange={(e) => this.onChangeEvent(e)}
+            onChange={this.onChangeEvent}
             autoFocus
             type="text"
             value={value}
@@ -234,7 +118,7 @@ class CellData extends React.Component {
   }
 
   selectedClass = () =>  {
-    return 'cell' + ( this.state.selected ? ' selected' : '' )
+    return 'cell' + ( this.props.selected ? ' selected' : '' )
   }
 
   editableClass = () =>  {
@@ -266,75 +150,21 @@ class CellData extends React.Component {
         {this.renderCell()}
       </td>
     )
-
-    // return (
-    //   <Cell
-    //     row={row}
-    //     col={col}
-    //     onSelect={this.onSelect}
-    //     defineClasses={this.defineClasses}
-    //     currentCell={this.props.currentCell}
-    //     toggleEditable={this.toggleEditable}
-    //   >
-    //     { this.renderCell() }
-    //   </Cell>
-    // )
   }
 }
 
-// const selectComputedData = createSelector(
-//   state => state.cell.currentCell,
-//   state => state.cell.prevCell,
-//   (currentCell, prevCell) => ({
-//     currentCell, prevCell
-//   })
-// )
+function mapStateToProps (state) {
+  const { currentCell } = state.spreadsheet;
 
-// selector
-const getSelectedCell = (state) => state.cell.currentCell
-// reselect function
-const getSelectedCellState = createSelector(
-  [ getSelectedCell ],
-  (currentCell) => currentCell
-)
+  return {
+    currentCell
+  }
+}
 
-// function mapStateToProps (state) {
-//   const { currentCell } = state.cell;
+function mergeProps (stateProps, dispatchProps, ownProps) {
+  return Object.assign({
+    selected: _.isEqual(stateProps.currentCell, [ownProps.row, ownProps.col])
+  }, _.omit(stateProps, ['currentCell']), dispatchProps, ownProps)
+}
 
-//   return {
-//     currentCell: getSelectedCellState(state)
-//   }
-// }
-
-export default connect(null, { toggleSelected })(CellData);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+export default connect(mapStateToProps, { toggleSelected }, mergeProps)(CellData);

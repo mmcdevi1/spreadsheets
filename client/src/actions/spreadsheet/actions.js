@@ -9,20 +9,9 @@ const actions = {
     payload: code
   }),
 
-  generateCells: (rows, cols) => {
-    const grid = new Array(rows)
-
-    for (let i = 0; i < rows; i++) {
-      grid[i] = Array.from({length: cols}).map(() => {
-        return { value: '' }
-      })
-    }
-    console.log(grid)
-    return {
-      type: actions.GENERATE_CELLS,
-      payload: grid
-    }
-  },
+  generateCells: () => ({
+    type: actions.GENERATE_CELLS,
+  }),
 
   toggleSelected: (row, col) => {
     return {

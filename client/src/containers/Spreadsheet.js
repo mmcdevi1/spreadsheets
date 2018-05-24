@@ -10,23 +10,17 @@ const { generateCells, toggleSelected } = actions;
 
 class Spreadsheet extends React.Component {
   componentDidMount () {
-    const { rows, columns, generateCells } = this.props;
-
-    generateCells(rows, columns)
+    this.props.generateCells()
   }
 
   renderRows () {
-    const { rows, columns, cells, currentCell } = this.props;
+    const { cells } = this.props;
 
     return cells.map((row, i) => {
       return (
         <Row
-          onClick={() => console.log(i)}
           key={i}
-          columns={columns}
           row={i}
-          blur={this.toggleEditable}
-          currentCell={currentCell}
         />
       )
     })
@@ -47,14 +41,12 @@ function mapStateToProps (state) {
     rows,
     columns,
     cells,
-    currentCell,
   } = state.spreadsheet;
 
   return {
     rows,
     columns,
     cells,
-    currentCell,
   }
 }
 

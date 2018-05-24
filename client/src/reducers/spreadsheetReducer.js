@@ -25,6 +25,18 @@ const clamp = (val, min, max) => {
   return val
 }
 
+const generateCells = (rows, cols) => {
+  const grid = new Array(rows)
+
+  for (let i = 0; i < rows; i++) {
+    grid[i] = Array.from({length: cols}).map(() => {
+      return { value: '' }
+    })
+  }
+  console.log(grid)
+  return grid
+}
+
 const initialState = {
   rows: 25,
   columns: 25,
@@ -34,11 +46,13 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case GENERATE_CELLS:
+    case GENERATE_CELLS: {
+      const cells = generateCells(state.rows, state.columns)
       return {
         ...state,
-        cells: action.payload
+        cells
       }
+    }
     case CELL_SELECTED:
       return {
         ...state,
@@ -49,8 +63,8 @@ const reducer = (state = initialState, action) => {
       if (!translation) return state
       const [newRow, newCol] = applyTranslation(translation, state.currentCell)
       const newPosition = [
-        clamp(newRow, 1, state.rows),
-        clamp(newCol, 1, state.columns)
+        clamp(newRow, 1, state.rows - 1),
+        clamp(newCol, 1, state.columns - 1)
       ]
       return {
         ...state,
