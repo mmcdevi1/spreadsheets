@@ -32,23 +32,23 @@ class CellData extends React.Component {
 
     window.addEventListener('keydown', (e) => this.clearGridOnKey(e))
     // window.addEventListener('keydown', (e) => this.forceEdit(e))
-  }  
+  }
 
   componentWillUnmount () {
     window.removeEventListener('keydown', (e) => this.clearGridOnKey(e))
     // window.removeEventListener('keydown', (e) => this.forceEdit(e))
   }
 
-  componentWillReceiveProps (nextProps) {
+  UNSAFE_componentWillReceiveProps (nextProps) {
     const { selected, editable } = this.state;
-    
+
     if ( selected && notEqual(nextProps.currentCell, this.props.currentCell) ) {
       this.setState({ selected: false })
     }
-    
+
     // if ( editable && !_.isEqual(nextProps.currentCell, this.props.currentCell) ) {
     //   this.setState({ editable: false })
-    // } 
+    // }
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -62,9 +62,9 @@ class CellData extends React.Component {
     if (nextState.editable !== editable) { return true }
 
     if ( _.isEqual( thisCell, this.props.currentCell ) || _.isEqual( thisCell, nextProps.currentCell ) ) {
-      return true 
+      return true
     }
-    
+
     return false
   }
 
@@ -104,7 +104,7 @@ class CellData extends React.Component {
         this.toggleIsSelected(false)
       } else if ( _.isEqual( cell, currentCell ) ) {
         this.toggleIsSelected(true)
-      } 
+      }
     }
 
     // if (this.state.editable) {
@@ -118,10 +118,10 @@ class CellData extends React.Component {
     //     } else if ( _.isEqual( currentCell, currentCell ) ) {
     //       console.log(currentCell, currentCell)
     //       this.toggleIsSelected(true)
-    //     } 
+    //     }
     //   }
     // }
-    
+
   }
 
   onChangeEvent (e) {
@@ -173,7 +173,7 @@ class CellData extends React.Component {
       const el = document.getElementById(value.substr(1))
                   .children[0].innerHTML
 
-      this.setState({ 
+      this.setState({
         mathValue: el
       })
     }
@@ -193,8 +193,8 @@ class CellData extends React.Component {
       const args = value.slice(5, value.length - 1)
       result = this.sum( args )
     } else if (value.length > 0 && value[0] === '=') {
-      result = math.eval(value.substr(1)) 
-    } 
+      result = math.eval(value.substr(1))
+    }
 
     // switch ( value.split( '(' )[0] ) {
     //   case '=sum':
@@ -207,8 +207,8 @@ class CellData extends React.Component {
     //   default:
     //     return;
     // }
-    
-    this.setState({ 
+
+    this.setState({
       mathValue: result
     })
   }
@@ -219,11 +219,11 @@ class CellData extends React.Component {
     switch (editable) {
       case true:
         return (
-          <input 
-            onChange={(e) => this.onChangeEvent(e)} 
-            autoFocus 
-            type="text" 
-            value={value} 
+          <input
+            onChange={(e) => this.onChangeEvent(e)}
+            autoFocus
+            type="text"
+            value={value}
           />
         );
       default:
@@ -242,23 +242,23 @@ class CellData extends React.Component {
   }
 
   readOnlyClass = (row) =>  {
-    return this.editableClass() + ( row === 0  ? ' read-only' : '' ); 
+    return this.editableClass() + ( row === 0  ? ' read-only' : '' );
   }
 
   defineClasses = (row, col) =>  {
-    return this.readOnlyClass(row) + ( col === 0  ? ' col-read-only' : '' ); 
+    return this.readOnlyClass(row) + ( col === 0  ? ' col-read-only' : '' );
   }
 
   render () {
     const { row, col, } = this.props;
     console.log('[CELL COMPONENT]: Is Rendering')
     return (
-      <td 
+      <td
         id={`${col}${row}`}
         className={this.defineClasses(row, col)}
-        data-row={row} 
-        data-column={col} 
-        onClick={this.onSelect} 
+        data-row={row}
+        data-column={col}
+        onClick={this.onSelect}
         onDoubleClick={this.toggleEditable}
         onBlur={this.toggleEditable}
         onKeyPress={(e) => this.onEnterKeyPress(e, row, col)}
@@ -268,7 +268,7 @@ class CellData extends React.Component {
     )
 
     // return (
-    //   <Cell 
+    //   <Cell
     //     row={row}
     //     col={col}
     //     onSelect={this.onSelect}

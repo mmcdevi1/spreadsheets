@@ -46,6 +46,7 @@ const reducer = (state = initialState, action) => {
       }
     case KEY_PRESSED: {
       const translation = translate[action.payload]
+      if (!translation) return state
       const [newRow, newCol] = applyTranslation(translation, state.currentCell)
       const newPosition = [
         clamp(newRow, 1, state.rows),

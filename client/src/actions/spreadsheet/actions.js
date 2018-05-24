@@ -10,43 +10,35 @@ const actions = {
   }),
 
   generateCells: (rows, cols) => {
-    return dispatch => {
-      const grid = new Array(rows);
+    const grid = new Array(rows)
 
-      for (let i = 0; i < rows; i++) {
-        grid[i] = Array.from({length: cols}).map(el => {
-          return { value: '' }
-        })
-      }
-
-      dispatch({
-        type: actions.GENERATE_CELLS,
-        payload: grid
+    for (let i = 0; i < rows; i++) {
+      grid[i] = Array.from({length: cols}).map(() => {
+        return { value: '' }
       })
+    }
+    console.log(grid)
+    return {
+      type: actions.GENERATE_CELLS,
+      payload: grid
     }
   },
 
   toggleSelected: (row, col) => {
-    return dispatch => {
-      dispatch({
-        type: actions.CELL_SELECTED,
-        payload: [row, col]
-      })
+    return {
+      type: actions.CELL_SELECTED,
+      payload: [row, col]
     }
   },
 
   forceEdit: (cells, currentCell) => {
-    return dispatch => {
+    const copy = cells.slice();
+    copy[currentCell[0]][currentCell[1]].isEditable = true
 
-      const copy = cells.slice();
-      copy[currentCell[0]][currentCell[1]].isEditable = true
-
-      dispatch({
-        type: actions.FORCE_EDIT,
-        payload: copy
-      })
+    return {
+      type: actions.FORCE_EDIT,
+      payload: copy
     }
-
   },
 
   toggleEditable: () => {
