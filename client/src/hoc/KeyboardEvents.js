@@ -1,39 +1,26 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import actions from '../actions/spreadsheet';
-import { LEFT_KEY, UP_KEY, RIGHT_KEY, DOWN_KEY } from '../keys';
 
-const { toggleSelected, forceEdit } = actions;
+const { keyPressed } = actions;
 
-export default function (ComposedComponent, toggleSelected) {
+export default function (ComposedComponent) {
   class KeyboardEvents extends React.Component {
+    constructor (props) {
+      super(props)
+      this.keyboardEvent = this.keyboardEvent.bind(this)
+    }
 
     componentDidMount () {
-      document.addEventListener('keydown', (e) => this.keyboardEvent(e))
+      document.addEventListener('keydown', this.keyboardEvent)
     }
 
     componentWillUnmount () {
-      document.removeEventListener('keydown', (e) => this.keyboardEvent(e))
+      document.removeEventListener('keydown', this.keyboardEvent)
     }
 
     keyboardEvent (e) {
-      const { toggleSelected, forceEdit, currentCell } = this.props;
-
-      if (e.keyCode === LEFT_KEY) {
-        toggleSelected(currentCell[0], currentCell[1] - 1)
-      }
-
-      if (e.keyCode === UP_KEY) {
-        toggleSelected(currentCell[0] - 1, currentCell[1])
-      }
-
-      if (e.keyCode === RIGHT_KEY) {
-        toggleSelected(currentCell[0], currentCell[1] + 1)
-      }
-
-      if (e.keyCode === DOWN_KEY) {
-        toggleSelected(currentCell[0] + 1, currentCell[1])
-      }
+      this.props.keyPressed(e.keyCode)
     }
 
     render () {
@@ -42,15 +29,5 @@ export default function (ComposedComponent, toggleSelected) {
 
   }
 
-  function mapStateToProps (state) {
-    const { 
-      currentCell, 
-    } = state.cell;
-
-    return {
-      currentCell, 
-    }
-  }
-
-  return connect(mapStateToProps, { toggleSelected, forceEdit })(KeyboardEvents);
+  return connect(null, { keyPressed })(KeyboardEvents);
 }

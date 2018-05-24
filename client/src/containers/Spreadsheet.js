@@ -16,22 +16,22 @@ class Spreadsheet extends React.Component {
   }
 
   renderRows () {
-    const { rows, columns, cells, toggleSelected, currentCell } = this.props;
-    
+    const { rows, columns, cells, currentCell } = this.props;
+
     return cells.map((row, i) => {
       return (
         <Row
           onClick={() => console.log(i)}
           key={i}
-          columns={columns} 
+          columns={columns}
           row={i}
-          blur={this.toggleEditable} 
+          blur={this.toggleEditable}
           currentCell={currentCell}
         />
       )
     })
   }
-  
+
   render () {
     console.log('[SPREADSHEET COMPONENT]: Is Rendering')
     return (
@@ -43,16 +43,15 @@ class Spreadsheet extends React.Component {
 }
 
 function mapStateToProps (state) {
-  const { 
-    rows, 
+  const {
+    rows,
     columns,
-    cells
+    cells,
+    currentCell,
   } = state.spreadsheet;
 
-  const { currentCell } = state.cell;
-
   return {
-    rows, 
+    rows,
     columns,
     cells,
     currentCell,
@@ -60,49 +59,6 @@ function mapStateToProps (state) {
 }
 
 export default connect(
-  mapStateToProps, 
+  mapStateToProps,
   { generateCells, toggleSelected }
 )(KeyboardEvents(Spreadsheet))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

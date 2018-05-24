@@ -2,6 +2,12 @@ const actions = {
   GENERATE_CELLS: 'GENERATE_CELLS',
   CELL_SELECTED: 'CELL_SELECTED',
   FORCE_EDIT: 'FORCE_EDIT',
+  KEY_PRESSED: 'KEY_PRESSED',
+
+  keyPressed: (code) => ({
+    type: actions.KEY_PRESSED,
+    payload: code
+  }),
 
   generateCells: (rows, cols) => {
     return dispatch => {
@@ -21,7 +27,7 @@ const actions = {
   },
 
   toggleSelected: (row, col) => {
-    return dispatch => {   
+    return dispatch => {
       dispatch({
         type: actions.CELL_SELECTED,
         payload: [row, col]
@@ -31,7 +37,7 @@ const actions = {
 
   forceEdit: (cells, currentCell) => {
     return dispatch => {
-      
+
       const copy = cells.slice();
       copy[currentCell[0]][currentCell[1]].isEditable = true
 
@@ -40,7 +46,7 @@ const actions = {
         payload: copy
       })
     }
-    
+
   },
 
   toggleEditable: () => {
@@ -49,8 +55,7 @@ const actions = {
 
       })
     }
-  }
-
+  },
 
 }
 
