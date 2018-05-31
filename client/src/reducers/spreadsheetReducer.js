@@ -38,8 +38,8 @@ const generateCells = (rows, cols) => {
 }
 
 const initialState = {
-  rows: 25,
-  columns: 25,
+  rows: 50,
+  columns: 100,
   cells: [],
   currentCell: []
 }

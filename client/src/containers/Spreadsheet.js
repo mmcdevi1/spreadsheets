@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import Row from '../components/Row';
 import Table from '../components/Table';
 import KeyboardEvents from '../hoc';
-// import { LEFT_KEY, UP_KEY, RIGHT_KEY, DOWN_KEY, SPACE_KEY } from '../keys';
 import actions from '../actions/spreadsheet';
 
 const { generateCells, toggleSelected } = actions;
@@ -28,6 +27,7 @@ class Spreadsheet extends React.Component {
 
   render () {
     console.log('[SPREADSHEET COMPONENT]: Is Rendering')
+    
     return (
       <Table>
          { this.renderRows() }

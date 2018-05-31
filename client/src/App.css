@@ -63,6 +63,11 @@ td.col-read-only {
   min-width: 40px;
 }
 
+td.read-only {
+  text-transform: uppercase;
+  text-align: center;
+}
+
 td span {
   padding: 5px;
 }

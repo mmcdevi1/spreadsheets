@@ -1,9 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-// import { createSelector } from 'reselect'
 import actions from '../actions/spreadsheet';
 import _ from 'lodash';
 import math from 'mathjs';
+import { header } from '../utils/alphabet';
 
 // import Cell from './Cell_test';
 
@@ -16,7 +16,7 @@ class CellData extends React.Component {
     const { row, col } = props;
     const isLeftCell = col === 0 && row > 0
     const isTopCell = row === 0 && col > 0
-    const value = (isLeftCell && row) || (isTopCell && col) || ''
+    const value = (isLeftCell && row) || (isTopCell && header(col - 1)) || ''
 
     this.state = {
       value,
@@ -135,10 +135,13 @@ class CellData extends React.Component {
 
   render () {
     const { row, col, } = this.props;
+    const { value } = this.state;
+
     console.log('[CELL COMPONENT]: Is Rendering')
+
     return (
       <td
-        id={`${col}${row}`}
+        id={`${header(col - 1) || 'col'}${row}`}
         className={this.defineClasses(row, col)}
         data-row={row}
         data-column={col}
