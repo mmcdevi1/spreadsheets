@@ -26,6 +26,14 @@ class CellData extends React.Component {
 
   }
 
+  componentDidMount () {
+    document.addEventListener('keydown', this.forceEdit)
+  }
+
+  componentWillUnmount () {
+    document.removeEventListener('keydown', this.forceEdit)
+  }
+
   onChangeEvent = (e) => {
     this.setState({
       value: e.target.value
@@ -42,6 +50,16 @@ class CellData extends React.Component {
 
       toggleSelected(row, col)
     }
+  }
+
+  forceEdit = (e) => {  
+    const { currentCell, selected } = this.props;  
+
+    if (selected && ![37,38,39,40].includes(e.keyCode)) { 
+      this.setState({  
+        editable: true 
+      }) 
+    }  
   }
 
   onEnterKeyPress = (e, row, col) => {
@@ -133,11 +151,16 @@ class CellData extends React.Component {
     return this.readOnlyClass(row) + ( col === 0  ? ' col-read-only' : '' );
   }
 
+  dragRange = () => {
+    if (true) {
+      console.log('mouse enter')
+    }
+  }
+
   render () {
     const { row, col, } = this.props;
-    const { value } = this.state;
 
-    console.log('[CELL COMPONENT]: Is Rendering')
+    console.log('[CELL COMPONENT]: Is Rendering', this.props)
 
     return (
       <td
@@ -149,6 +172,7 @@ class CellData extends React.Component {
         onDoubleClick={this.toggleEditable}
         onBlur={this.toggleEditable}
         onKeyPress={(e) => this.onEnterKeyPress(e, row, col)}
+        // onMouseEnter={this.dragRange}
       >
         {this.renderCell()}
       </td>
